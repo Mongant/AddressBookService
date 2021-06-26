@@ -38,7 +38,7 @@ public class AddressBookRepositoryTest {
     public void testFindMaxPartition() {
         int maxPartition = 0;
         try {
-            maxPartition = repository.findMaxPartition();
+            maxPartition = repository.findMaxId();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -27,8 +29,8 @@ public class ExceptionControllerAdvice {
     private ApiError error(Exception ex, String message) {
         ApiError apiError = new ApiError();
         try {
-            String nameFilter = (String) RequestContextHolder.currentRequestAttributes().getAttribute("refContract", RequestAttributes.SCOPE_REQUEST);
-            apiError.setNameFilter(nameFilter);
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            apiError.setNameFilter(request.getParameter("nameFilter"));
             apiError.setMessage(message);
         } catch (Exception e) {
             e.printStackTrace();

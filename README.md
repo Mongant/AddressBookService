@@ -1,23 +1,28 @@
-#AddressBookService
+# AddressBookService
 
 JSON service for getting information by regular expression.
 Which get information about person names except symbols mashed in regular expression.
-####Start application
-*Apache Tomcat v8.5*<br>
+
+#### Start application
+
+Apache Tomcat v8.5 <br>
 Change full path for parameters file to csv data file (contains in resource directory)
+
 ```text
 main.properties
 dataFile.path=~/Workspace/AddressBookService/src/test/resources/AddressNameTest.csv
 ```
 And will start war file in Tomcat server
 
-####Query example
+#### Query example
+
 ```text
 GET
 http://localhost:8080/AddressBook/hello/contacts?nameFilter=^A.*$
 ```
 
-####Request example
+#### Request example
+
 ```json
 {"contacts":
   [
@@ -32,12 +37,16 @@ http://localhost:8080/AddressBook/hello/contacts?nameFilter=^A.*$
   ]
 }
 ```
-####Query example
+
+#### Query example
+
 ```text
 GET
 http://localhost:8080/AddressBook/hello/contacts?nameFilter=^.*[aey].*$
 ```
-####Request example
+
+#### Request example
+
 ```json
 {"contacts":
     [
@@ -53,8 +62,10 @@ http://localhost:8080/AddressBook/hello/contacts?nameFilter=^.*[aey].*$
     ]
 }
 ```
+
 ---
-##DataBase
+
+## DataBase
 
 [H2 Engine](https://www.h2database.com/html/main.html) <br>
 Application use in memory H2 database

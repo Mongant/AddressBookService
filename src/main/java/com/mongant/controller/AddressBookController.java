@@ -22,7 +22,7 @@ public class AddressBookController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "/hello/contacts", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseContacts getContactsInformation(@RequestParam("nameFilter") String filterRegExp) throws Exception{
+    public ResponseContacts getContactsInformation(@RequestParam("nameFilter") String filterRegExp) throws Exception {
         return service.getContactsInfo(filterRegExp);
     }
 }

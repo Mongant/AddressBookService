@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,8 +52,9 @@ public class AddressBookRepository {
     /**
      * Find max id from address data base
      */
-    public int findMaxPartition() throws Exception{
-        int maxPartResult = 0;
+    @SuppressWarnings("ConstantConditions")
+    public int findMaxId() throws Exception{
+        int maxPartResult;
         String sql = "select max(id) as maxPart from ADDRESS_BOOK";
         try {
             maxPartResult = jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class);

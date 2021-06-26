@@ -11,27 +11,30 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressBookService {
 
     private final AddressBookRepository repository;
-    private int maxPart;
+    private final AsyncProcessing asyncProcessing;
+    private int maxId;
 
     @Value("${process.partition}")
     private int partition;
 
     @Autowired
-    public AddressBookService(AddressBookRepository repository) {
+    public AddressBookService(AddressBookRepository repository, AsyncProcessing asyncProcessing) {
         this.repository = repository;
+        this.asyncProcessing = asyncProcessing;
     }
 
     public ResponseContacts getContactsInfo(String regEx) throws Exception {
         ResponseContacts response = new ResponseContacts();
 
+        //throw exception if regular expression is empty
         if(StringUtils.isEmpty(regEx)) throw new WrongParameterException("nameFilter parameter must by not null!");
 
         response.setContacts(processPartition(regEx));
@@ -39,27 +42,36 @@ public class AddressBookService {
     }
 
     private List<Contact> processPartition(String regEx) throws Exception {
-        List<Contact> contacts = new ArrayList<>();
+        List<Future<List<Contact>>> futureContacts = new ArrayList<>();
         try {
             Predicate<String> contactFilter = Pattern.compile(regEx).asPredicate();
-            setMaxPart();
+            initMaxId();
             int startPart = 1;
-            while (startPart <= maxPart) {
+            while (startPart <= maxId) {
                 int endPart = startPart + partition;
-                List<Contact> result = repository.findAllContacts(startPart, endPart);
-                contacts.addAll(result.stream().filter(e -> !contactFilter.test(e.getName())).collect(Collectors.toList()));
+                Thread currentThread = Thread.currentThread();
+                System.out.println("processPartition thread: " + currentThread.getName());
+                futureContacts.add(asyncProcessing.getFutureContacts(contactFilter, startPart, endPart));
                 startPart = endPart + 1;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
+        return convertFuturesToContacts(futureContacts);
+    }
+
+    private List<Contact> convertFuturesToContacts(List<Future<List<Contact>>> futureContacts) throws Exception {
+        List<Contact> contacts = new ArrayList<>();
+        for(Future<List<Contact>> future : futureContacts) {
+            contacts.addAll(future.get());
+        }
         return contacts;
     }
 
-    public void setMaxPart() throws Exception{
-        if(maxPart == 0) {
-            maxPart = repository.findMaxPartition();
+    private void initMaxId() throws Exception{
+        if(maxId == 0) {
+            maxId = repository.findMaxId();
         }
     }
 }
