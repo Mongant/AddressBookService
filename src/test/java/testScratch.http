@@ -1,4 +1,4 @@
-GET http://localhost:8080/AddressBook/hello/contacts?nameFilter=^[ABCDEFGHJKLMNOPQSIR]
+GET http://localhost:8080/AddressBook/hello/contacts?nameFilter=^[AB]
 
 ###
 GET http://localhost:8080/AddressBook/hello/contacts?nameFilter=^.*[aeiy].*$

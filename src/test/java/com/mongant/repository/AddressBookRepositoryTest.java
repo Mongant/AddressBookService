@@ -33,15 +33,4 @@ public class AddressBookRepositoryTest {
         }
         assertFalse(contacts.isEmpty());
     }
-
-    @Test
-    public void testFindMaxPartition() {
-        int maxPartition = 0;
-        try {
-            maxPartition = repository.findMaxId();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        assertEquals(10, maxPartition);
-    }
 }

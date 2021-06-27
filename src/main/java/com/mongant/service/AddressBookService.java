@@ -3,9 +3,10 @@ package com.mongant.service;
 import com.mongant.exceptions.WrongParameterException;
 import com.mongant.model.Contact;
 import com.mongant.model.ResponseContacts;
-import com.mongant.repository.AddressBookRepository;
+import com.mongant.repository.DataInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,19 +17,19 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 @Service
+@DependsOn("dataInitializer")
 public class AddressBookService {
 
-    private final AddressBookRepository repository;
     private final AsyncProcessing asyncProcessing;
-    private int maxId;
+    private final int maxId;
 
     @Value("${process.partition}")
     private int partition;
 
     @Autowired
-    public AddressBookService(AddressBookRepository repository, AsyncProcessing asyncProcessing) {
-        this.repository = repository;
+    public AddressBookService(AsyncProcessing asyncProcessing) {
         this.asyncProcessing = asyncProcessing;
+        maxId = DataInitializer.getMaxId();
     }
 
     public ResponseContacts getContactsInfo(String regEx) throws Exception {
@@ -45,7 +46,6 @@ public class AddressBookService {
         List<Future<List<Contact>>> futureContacts = new ArrayList<>();
         try {
             Predicate<String> contactFilter = Pattern.compile(regEx).asPredicate();
-            initMaxId();
             int startPart = 1;
             while (startPart <= maxId) {
                 int endPart = startPart + partition;
@@ -67,11 +67,5 @@ public class AddressBookService {
             contacts.addAll(future.get());
         }
         return contacts;
-    }
-
-    private void initMaxId() throws Exception{
-        if(maxId == 0) {
-            maxId = repository.findMaxId();
-        }
     }
 }

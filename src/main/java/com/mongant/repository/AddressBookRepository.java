@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 
 @Repository
@@ -47,20 +46,5 @@ public class AddressBookRepository {
             throw new SQLException("Inner SQL exception");
         }
         return contactsResult;
-    }
-
-    /**
-     * Find max id from address data base
-     */
-    @SuppressWarnings("ConstantConditions")
-    public int findMaxId() throws Exception{
-        int maxPartResult;
-        String sql = "select max(id) as maxPart from ADDRESS_BOOK";
-        try {
-            maxPartResult = jdbcTemplate.queryForObject(sql, new HashMap<>(), Integer.class);
-        } catch (Exception ex) {
-            throw new SQLException("Inner SQL exception");
-        }
-        return maxPartResult;
     }
 }
