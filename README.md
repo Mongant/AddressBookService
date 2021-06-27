@@ -5,7 +5,7 @@ Which get information about person names except symbols mashed in regular expres
 
 #### Start application
 
-Apache Tomcat v8.5 <br>
+Apache Tomcat v8.5<br>
 Change full path for parameters file to csv data file (contains in resource directory)
 
 ```text
@@ -37,14 +37,12 @@ http://localhost:8080/AddressBook/hello/contacts?nameFilter=^A.*$
   ]
 }
 ```
-
 #### Query example
 
 ```text
 GET
 http://localhost:8080/AddressBook/hello/contacts?nameFilter=^.*[aey].*$
 ```
-
 #### Request example
 
 ```json
@@ -62,7 +60,6 @@ http://localhost:8080/AddressBook/hello/contacts?nameFilter=^.*[aey].*$
     ]
 }
 ```
-
 ---
 
 ## DataBase
